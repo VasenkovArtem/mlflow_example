@@ -3,3 +3,7 @@ params:
       - accuracy
       - f1
       - roc_auc
+      - precision
+      - recall
+      - average_precision
+artifact_type: "classification_report"  # "classification_report", "confusion_matrix", "feature_importances", "pr_curve", "errors_csv"
