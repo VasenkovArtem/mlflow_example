@@ -22,6 +22,7 @@ def get_model(model_type, model_params):
         return DecisionTreeClassifier(**model_params)
     else:
         raise ValueError(f"unknown model_type: {model_type}")
+    
 
 def train():
     logger = get_logger(logger_name=STAGE_NAME)
@@ -71,5 +72,15 @@ def train():
         with open(RUN_ID_FILE, "w") as f:
             f.write(run_id)
         logger.info(f"Saved run_id to {RUN_ID_FILE}: {run_id}")
+    
+    
+        for df, name in [(X_train, "X_train.csv"),
+                         (y_train, "y_train.csv"),
+                         (X_test, "X_test.csv"),
+                         (y_test, "y_test.csv")]:
+            df.to_csv(name, index=False)
+            mlflow.log_artifact(name)
+    
+        logger.info('Данные по датасетам залогированы в MLFlow')
 
     logger.info(f'Завершено обучение. run_id: {run_id}')

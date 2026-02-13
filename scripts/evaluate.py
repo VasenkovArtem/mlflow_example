@@ -44,6 +44,9 @@ def evaluate():
         score = scorer(model, X_test, y_test)
         metrics[metric_name] = score
     logger.info(f'Метрики: {metrics}')
+    
+    while mlflow.active_run():
+        mlflow.end_run()
 
     mlflow.set_experiment("homework_ulyanova")
     with mlflow.start_run(run_id=run_id):
