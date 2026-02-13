@@ -36,7 +36,7 @@ def train():
     logger.info('Успешно считали датасеты!')
 
     model_type = train_params['model_type']
-    model_params = train_params['params'].copy()
+    model_params = train_params['params'].copy() if train_params['params'] is not None else {}
     model_params['random_state'] = RANDOM_STATE
     logger.info(f'Тип модели: {model_type}, параметры: {model_params}')
     model = get_model(model_type, model_params)

@@ -24,7 +24,10 @@ def process_data():
     columns = params['params']['features']
     target_column = 'income'
     X, y = df[columns], df[target_column]
+    
+    logger.info(f'    Все фичи в датасете: {df.columns}')
     logger.info(f'    Используемые фичи: {columns}')
+    logger.info(f'    Использовано: {len(columns)}/{len(df.columns) - 1} фичей')
 
     all_cat_features = [
         'workclass', 'education', 'marital.status', 'occupation', 'relationship',

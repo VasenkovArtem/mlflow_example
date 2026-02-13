@@ -1,9 +1,19 @@
 params:
   features:
+    - age
+    - workclass
+    - fnlwgt
+    - education.num
+    - marital.status
+    - relationship
+    - capital.loss
+    - hours.per.week
     - race
     - sex
     - native.country
     - occupation
     - education
     - capital.gain
-  train_size: 20000
+  train_size: 22792
+  
+ # целевая переменная - income

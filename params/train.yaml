@@ -1,4 +1,14 @@
-model_type: "RandomForest" # LogisticRegression, RandomForest, GradientBoosting, DecisionTreeClassifier
+model_type: "GradientBoosting" # LogisticRegression, RandomForest, GradientBoosting, DecisionTreeClassifier
 params:
-  n_estimators: 100
-  max_depth: 7
+  
+# desicion tree
+# max_depth: 10
+  
+# random forest
+# n_estimators: 1000
+
+# log reg
+#   penalty: l2
+#   C: 0.9
+#   solver: lbfgs
+#   max_iter: 1000
