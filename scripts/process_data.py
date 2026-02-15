@@ -21,10 +21,13 @@ def process_data():
 
     logger.info('Делаем предобработку данных')
     df = dataset['train'].to_pandas()
-    columns = params['features']
+    columns = params['params']['features']
     target_column = 'income'
     X, y = df[columns], df[target_column]
+    
+    logger.info(f'    Все фичи в датасете: {df.columns}')
     logger.info(f'    Используемые фичи: {columns}')
+    logger.info(f'    Использовано: {len(columns)}/{len(df.columns) - 1} фичей')
 
     all_cat_features = [
         'workclass', 'education', 'marital.status', 'occupation', 'relationship',
@@ -40,8 +43,15 @@ def process_data():
         X_transformed, y_transformed, test_size=TEST_SIZE, random_state=RANDOM_STATE
     )
 
-    # use train_size param to take only train_size rows of train dataset
-    ...
+    # только первые train_size строк
+    train_size_crop = params['params'].get('train_size')
+    if train_size_crop is not None and train_size_crop < len(y_train):
+        logger.info(f'    Ограничили тренировочную выборку до {train_size_crop} объектов из {len(X_train)}')
+        X_train = X_train[:train_size_crop]
+        y_train = y_train[:train_size_crop]
+    else:
+        logger.info('    Используем полный тренировочный датасет')
+    
     logger.info(f'    Размер тренировочного датасета: {len(y_train)}')
     logger.info(f'    Размер тестового датасета: {len(y_test)}')
 
