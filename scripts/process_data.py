@@ -34,14 +34,21 @@ def process_data():
     num_features = list(set(columns) - set(all_cat_features))
 
     preprocessor = OrdinalEncoder()
-    X_transformed = np.hstack([X[num_features], preprocessor.fit_transform(X[cat_features])])
+    num_part = X[num_features].to_numpy() if num_features else np.empty((len(X), 0))
+    cat_part = (
+        preprocessor.fit_transform(X[cat_features]) if cat_features else np.empty((len(X), 0))
+    )
+    X_transformed = np.hstack([num_part, cat_part])
     y_transformed: pd.Series = (y == '>50K').astype(int)
     X_train, X_test, y_train, y_test = train_test_split(
         X_transformed, y_transformed, test_size=TEST_SIZE, random_state=RANDOM_STATE
     )
 
     # use train_size param to take only train_size rows of train dataset
-    ...
+    train_size = params.get('train_size')
+    if train_size is not None:
+        X_train = X_train[:train_size]
+        y_train = y_train[:train_size]
     logger.info(f'    Размер тренировочного датасета: {len(y_train)}')
     logger.info(f'    Размер тестового датасета: {len(y_test)}')
 
