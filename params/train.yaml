@@ -1,5 +1,16 @@
 params:
-  penalty: l2
-  C: 0.9
-  solver: lbfgs
-  max_iter: 1000
+  model_type: logistic_regression
+  logistic_regression:
+    C: 1.0
+    max_iter: 200
+    penalty: l2
+    solver: lbfgs
+  random_forest:
+    n_estimators: 200
+    max_depth: null
+    min_samples_split: 2
+    min_samples_leaf: 1
+  gradient_boosting:
+    n_estimators: 200
+    learning_rate: 0.2
+    max_depth: 3
