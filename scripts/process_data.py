@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+import mlflow
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
@@ -14,6 +15,9 @@ STAGE_NAME = 'process_data'
 def process_data():
     logger = get_logger(logger_name=STAGE_NAME)
     params = load_params(stage_name=STAGE_NAME)
+    
+    mlflow.log_params(params)
+    mlflow.log_param('test_size', TEST_SIZE)
 
     logger.info('Начали скачивать данные')
     dataset = load_dataset(DATASET_NAME)
@@ -39,9 +43,13 @@ def process_data():
     X_train, X_test, y_train, y_test = train_test_split(
         X_transformed, y_transformed, test_size=TEST_SIZE, random_state=RANDOM_STATE
     )
+    
+    X_train = X_train[:params['train_size']]
+    y_train = y_train[:params['train_size']]
+    
+    dataset = mlflow.data.from_pandas(df, name='raw_dataset')
+    mlflow.log_input(dataset, context='training and evaluation')
 
-    # use train_size param to take only train_size rows of train dataset
-    ...
     logger.info(f'    Размер тренировочного датасета: {len(y_train)}')
     logger.info(f'    Размер тестового датасета: {len(y_test)}')
 

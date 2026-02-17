@@ -1,5 +1,5 @@
 params:
-  penalty: l2
-  C: 0.9
-  solver: lbfgs
-  max_iter: 1000
+  model: DecisionTreeClassifier
+  hyperparams:
+    max_depth: 8
+    min_samples_leaf: 10

@@ -1,0 +1,15 @@
+artifact_uri: file:///app/mlruns/193464706915185092/0be6d10f390d490cbc6d1ed9cf10d32a/artifacts
+end_time: 1771179846965
+entry_point_name: ''
+experiment_id: '193464706915185092'
+lifecycle_stage: active
+run_id: 0be6d10f390d490cbc6d1ed9cf10d32a
+run_name: secretive-deer-275
+run_uuid: 0be6d10f390d490cbc6d1ed9cf10d32a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771179844741
+status: 3
+tags: []
+user_id: itssevabby

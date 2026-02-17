@@ -2,10 +2,11 @@ import os
 
 import numpy as np
 import pandas as pd
+import mlflow
 from joblib import load
-from sklearn.metrics import get_scorer
+from sklearn.metrics import get_scorer, ConfusionMatrixDisplay
 
-from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH
+from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH, ARTIFACTS_PATH
 from utils import get_logger, load_params
 
 STAGE_NAME = 'evaluate'
@@ -29,9 +30,6 @@ def evaluate():
         )
     model = load(MODEL_FILEPATH)
 
-    # logger.info('Скорим модель на тесте')
-    # y_proba = model.predict_proba(X_test)[:, 1]
-    # y_pred = np.where(y_proba >= 0.5, 1, 0)
 
     logger.info('Начали считать метрики на тесте')
     metrics = {}
@@ -39,6 +37,18 @@ def evaluate():
         scorer = get_scorer(metric_name)
         score = scorer(model, X_test, y_test)
         metrics[metric_name] = score
+
+    mlflow.log_metrics(metrics)
+    
+    disp = ConfusionMatrixDisplay.from_estimator(
+        model,
+        X_test,
+        y_test,
+    )
+    filename = ARTIFACTS_PATH + 'cm.png'
+    disp.figure_.savefig(filename)
+    mlflow.log_artifact(filename)
+
     logger.info(f'Значения метрик - {metrics}')
 
 
