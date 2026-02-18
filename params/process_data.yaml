@@ -1,4 +1,5 @@
 params:
+  target_column: income
   features:
     - race
     - sex
@@ -6,4 +7,3 @@ params:
     - occupation
     - education
     - capital.gain
-  train_size: 1000

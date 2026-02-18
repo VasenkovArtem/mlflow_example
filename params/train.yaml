@@ -1,5 +1,17 @@
 params:
+  # Best ROC-AUC (0.85): xgboost, n_estimators=50, max_depth=6, train_size=all
+  model_type: xgboost
+  # LogisticRegression
   penalty: l2
   C: 0.9
   solver: lbfgs
   max_iter: 1000
+  # DecisionTreeClassifier / RandomForestClassifier / XGBClassifier
+  criterion: gini
+  max_depth: 6
+  min_samples_split: 2
+  min_samples_leaf: 1
+  n_estimators: 50
+  learning_rate: 0.1
+  subsample: 0.8
+  colsample_bytree: 0.8

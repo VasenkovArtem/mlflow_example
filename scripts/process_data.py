@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+import mlflow
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
@@ -22,7 +23,7 @@ def process_data():
     logger.info('Делаем предобработку данных')
     df = dataset['train'].to_pandas()
     columns = params['features']
-    target_column = 'income'
+    target_column = params['target_column']
     X, y = df[columns], df[target_column]
     logger.info(f'    Используемые фичи: {columns}')
 
@@ -40,10 +41,18 @@ def process_data():
         X_transformed, y_transformed, test_size=TEST_SIZE, random_state=RANDOM_STATE
     )
 
-    # use train_size param to take only train_size rows of train dataset
-    ...
+    train_size = params.get('train_size')
+    if train_size is not None:
+        X_train, y_train = X_train[:train_size], y_train[:train_size]
     logger.info(f'    Размер тренировочного датасета: {len(y_train)}')
     logger.info(f'    Размер тестового датасета: {len(y_test)}')
+
+    if mlflow.active_run():
+        mlflow.log_params({
+            'data_train_size': len(y_train),
+            'data_target_column': target_column,
+            'data_features': ','.join(columns),
+        })
 
     logger.info('Начали сохранять датасеты')
     os.makedirs(os.path.dirname(DATASET_PATH_PATTERN), exist_ok=True)
