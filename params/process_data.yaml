@@ -1,9 +1,14 @@
 params:
   features:
+    - age
     - race
     - sex
     - native.country
     - occupation
-    - education
     - capital.gain
-  train_size: 1000
+    - workclass
+    - marital.status
+    - education.num
+  train_size: 10000
+  test_size: 0.3
+  random_state: 42
