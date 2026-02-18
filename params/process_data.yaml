@@ -6,4 +6,7 @@ params:
     - occupation
     - education
     - capital.gain
-  train_size: 1000
+    - age
+    - hours.per.week
+    - capital.loss
+  train_size: 5000

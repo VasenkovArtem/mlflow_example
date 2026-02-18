@@ -4,6 +4,7 @@ import pandas as pd
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
+import mlflow
 
 from constants import DATASET_NAME, DATASET_PATH_PATTERN, TEST_SIZE, RANDOM_STATE
 from utils import get_logger, load_params
@@ -41,7 +42,15 @@ def process_data():
     )
 
     # use train_size param to take only train_size rows of train dataset
-    ...
+    
+    if 'train_size' in params:
+        X_train = X_train[:params['train_size']]
+        y_train = y_train[:params['train_size']]
+    
+    mlflow.log_param("train_size", len(X_train))
+    mlflow.log_param("features", columns)
+
+
     logger.info(f'    Размер тренировочного датасета: {len(y_train)}')
     logger.info(f'    Размер тестового датасета: {len(y_test)}')
 
@@ -51,9 +60,13 @@ def process_data():
         (X_train, X_test, y_train, y_test),
         ('X_train', 'X_test', 'y_train', 'y_test'),
     ):
-        pd.DataFrame(split).to_csv(
-            DATASET_PATH_PATTERN.format(split_name=split_name), index=False
-        )
+
+        path = DATASET_PATH_PATTERN.format(split_name=split_name)
+        
+
+        pd.DataFrame(split).to_csv(path, index=False)
+        
+        mlflow.log_artifact(path, artifact_path="datasets")
     logger.info('Успешно сохранили датасеты!')
 
 
