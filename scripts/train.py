@@ -5,6 +5,9 @@ from sklearn.linear_model import LogisticRegression
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH, RANDOM_STATE
 from utils import get_logger, load_params
 
+import mlflow
+import mlflow.sklearn
+
 STAGE_NAME = 'train'
 
 
@@ -21,15 +24,20 @@ def train():
 
     logger.info('Создаём модель')
     params['random_state'] = RANDOM_STATE
-    logger.info(f'    Параметры модели: {params}')
     model = LogisticRegression(**params)
 
     logger.info('Обучаем модель')
     model.fit(X_train, y_train)
 
-    logger.info('Сохраняем модель')
+    logger.info('Сохраняем модель локально')
     dump(model, MODEL_FILEPATH)
-    logger.info('Успешно!')
+
+    logger.info('Логируем в MLflow')
+    mlflow.log_param("model_type", "LogisticRegression")
+    mlflow.log_params(params)
+    mlflow.sklearn.log_model(model, "model")
+    
+    logger.info('Шаг Train успешно завершен!')
 
 
 if __name__ == '__main__':

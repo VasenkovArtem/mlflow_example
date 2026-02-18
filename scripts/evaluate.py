@@ -3,10 +3,25 @@ import os
 import numpy as np
 import pandas as pd
 from joblib import load
-from sklearn.metrics import get_scorer
+from sklearn.metrics import (
+    get_scorer, 
+    confusion_matrix, 
+    roc_auc_score, 
+    precision_score, 
+    recall_score, 
+    f1_score,
+    average_precision_score
+)
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH
 from utils import get_logger, load_params
+
+import mlflow
+
+
 
 STAGE_NAME = 'evaluate'
 
@@ -29,18 +44,44 @@ def evaluate():
         )
     model = load(MODEL_FILEPATH)
 
-    # logger.info('Скорим модель на тесте')
-    # y_proba = model.predict_proba(X_test)[:, 1]
-    # y_pred = np.where(y_proba >= 0.5, 1, 0)
+    logger.info('Скорим модель на тесте')
+    y_pred = model.predict(X_test)
+    y_proba = model.predict_proba(X_test)[:, 1]
 
     logger.info('Начали считать метрики на тесте')
-    metrics = {}
-    for metric_name in params['metrics']:
-        scorer = get_scorer(metric_name)
-        score = scorer(model, X_test, y_test)
-        metrics[metric_name] = score
-    logger.info(f'Значения метрик - {metrics}')
+
+    report_metrics = {
+        "accuracy": model.score(X_test, y_test),
+        "precision": precision_score(y_test, y_pred),
+        "recall": recall_score(y_test, y_pred),
+        "f1": f1_score(y_test, y_pred),
+        "roc_auc": roc_auc_score(y_test, y_proba),
+        "pr_auc": average_precision_score(y_test, y_proba)
+    }
+    
+    mlflow.log_metrics(report_metrics)
+
+    logger.info(f'Значения метрик - {report_metrics}')
+
+
+    plt.figure(figsize=(8, 6))
+    cm = confusion_matrix(y_test, y_pred)
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+    plt.title('Confusion Matrix')
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    
+    plot_path = "confusion_matrix.png"
+    plt.savefig(plot_path)
+    mlflow.log_artifact(plot_path) 
+    plt.close()
+    
+    logger.info('Confusion Matrix успешно залогирован')
 
 
 if __name__ == '__main__':
-    evaluate()
+    if mlflow.active_run() is None:
+        with mlflow.start_run():
+            evaluate()
+    else:
+        evaluate()
