@@ -4,6 +4,7 @@ import pandas as pd
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
+import mlflow
 
 from constants import DATASET_NAME, DATASET_PATH_PATTERN, TEST_SIZE, RANDOM_STATE
 from utils import get_logger, load_params
@@ -41,9 +42,22 @@ def process_data():
     )
 
     # use train_size param to take only train_size rows of train dataset
-    ...
+    if 'train_size' in params and params['train_size'] is not None:
+        train_size = params['train_size']
+        X_train = X_train[:train_size]
+        y_train = y_train[:train_size]
+        logger.info(f'    Урезали тренировочный датасет до {train_size} записей')
+    
     logger.info(f'    Размер тренировочного датасета: {len(y_train)}')
     logger.info(f'    Размер тестового датасета: {len(y_test)}')
+    
+    # Log parameters to MLflow
+    mlflow.log_param('features', ','.join(columns))
+    mlflow.log_param('n_features', len(columns))
+    mlflow.log_param('train_size', len(y_train))
+    mlflow.log_param('test_size', len(y_test))
+    mlflow.log_param('random_state', RANDOM_STATE)
+    mlflow.log_param('test_split_ratio', TEST_SIZE)
 
     logger.info('Начали сохранять датасеты')
     os.makedirs(os.path.dirname(DATASET_PATH_PATTERN), exist_ok=True)
@@ -55,6 +69,18 @@ def process_data():
             DATASET_PATH_PATTERN.format(split_name=split_name), index=False
         )
     logger.info('Успешно сохранили датасеты!')
+    
+    # Log training dataset as artifact to MLflow
+    if params.get('log_dataset', True):
+        logger.info('Логируем тренировочный датасет в MLflow')
+        train_dataset = pd.concat([
+            pd.DataFrame(X_train, columns=[f'feature_{i}' for i in range(X_train.shape[1])]),
+            pd.DataFrame(y_train, columns=['target'])
+        ], axis=1)
+        train_dataset_path = '/tmp/train_dataset.csv'
+        train_dataset.to_csv(train_dataset_path, index=False)
+        mlflow.log_artifact(train_dataset_path, 'datasets')
+        logger.info('Тренировочный датасет залогирован в MLflow!')
 
 
 if __name__ == '__main__':
