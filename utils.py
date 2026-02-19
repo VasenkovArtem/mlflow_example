@@ -12,11 +12,12 @@ warnings.filterwarnings('ignore', category=DataConversionWarning)
 PARAMS_FILEPATH_PATTERN = '/app/params/{stage_name}.yaml'
 
 
-def load_params(stage_name: str) -> dict:
-    params_filepath = PARAMS_FILEPATH_PATTERN.format(stage_name=stage_name)
+def load_params(stage_name: str, params_filepath: str | None = None) -> dict:
+    if params_filepath is None:
+        params_filepath = PARAMS_FILEPATH_PATTERN.format(stage_name=stage_name)
     if not os.path.exists(params_filepath):
         raise FileNotFoundError(
-            f'Параметров для шага {stage_name} не существует! Проверьте имя шага'
+            f'Params file not found: {params_filepath}'
         )
     with open(params_filepath, 'r') as file:
         params = yaml.safe_load(file)
