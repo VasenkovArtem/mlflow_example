@@ -1,9 +1,14 @@
 params:
   features:
+    - age
+    - workclass
+    - education.num
+    - marital.status
+    - occupation
+    - relationship
     - race
     - sex
-    - native.country
-    - occupation
-    - education
     - capital.gain
-  train_size: 1000
+    - capital.loss
+    - hours.per.week
+  train_size: 22000
