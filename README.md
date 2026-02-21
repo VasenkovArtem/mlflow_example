@@ -1,4 +1,4 @@
-# mlflow_example
-Пример использования mlflow для трекинга экспериментов
+# MLFLow Homeworks
+Домашние задания по курсу MLOps
 
-Запуск пайплайна &mdash; `python3 runner.py`
+**Отчет:** report.md
