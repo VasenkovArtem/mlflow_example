@@ -1,9 +1,8 @@
 params:
   features:
-    - race
+    - age
     - sex
-    - native.country
-    - occupation
-    - education
+    - education.num
     - capital.gain
-  train_size: 1000
+    - hours.per.week
+  train_size: 1500
