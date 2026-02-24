@@ -1,5 +1,16 @@
 params:
-  penalty: l2
-  C: 0.9
-  solver: lbfgs
-  max_iter: 1000
+  model_type: rf
+  logreg:
+    penalty: l2
+    C: 0.9
+    solver: lbfgs
+    max_iter: 1000
+
+  dtree:
+    max_depth: null
+    min_samples_split: 2
+
+  rf:
+    n_estimators: 200
+    max_depth: 10
+    n_jobs: -1

@@ -1,5 +1,10 @@
 params:
   metrics:
       - accuracy
+      - precision
+      - recall
       - f1
       - roc_auc
+      - pr_auc
+
+  threshold: 0.5
