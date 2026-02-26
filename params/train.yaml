@@ -1,4 +1,6 @@
 params:
+  max_iter: 1000
+  model_type: LogisticRegression
   penalty: l2
   C: 0.9
   solver: lbfgs

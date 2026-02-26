@@ -9,7 +9,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(name)s : %(message)s
 warnings.filterwarnings('ignore', category=FutureWarning)
 warnings.filterwarnings('ignore', category=DataConversionWarning)
 
-PARAMS_FILEPATH_PATTERN = '/app/params/{stage_name}.yaml'
+PARAMS_FILEPATH_PATTERN = 'params/{stage_name}.yaml'
 
 
 def load_params(stage_name: str) -> dict:

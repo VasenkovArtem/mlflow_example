@@ -1,11 +1,21 @@
 import pandas as pd
 from joblib import dump
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH, RANDOM_STATE
 from utils import get_logger, load_params
+import mlflow
 
 STAGE_NAME = 'train'
+
+MODEL_CLASSES = {
+    'LogisticRegression': LogisticRegression,
+    'DecisionTree': DecisionTreeClassifier,
+    'RandomForest': RandomForestClassifier,
+    'GradientBoosting': GradientBoostingClassifier,
+}
 
 
 def train():
@@ -19,16 +29,25 @@ def train():
     X_train, X_test, y_train, y_test = splits
     logger.info('Успешно считали датасеты!')
 
-    logger.info('Создаём модель')
+    model_type = params.pop('model_type', 'LogisticRegression')
+    model_class = MODEL_CLASSES[model_type]
+
     params['random_state'] = RANDOM_STATE
+    logger.info(f'Создаём модель: {model_type}')
     logger.info(f'    Параметры модели: {params}')
-    model = LogisticRegression(**params)
+    model = model_class(**params)
 
     logger.info('Обучаем модель')
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train.values.ravel())
 
     logger.info('Сохраняем модель')
     dump(model, MODEL_FILEPATH)
+    logger.info('Успешно!')
+
+    train_dataset = pd.concat([X_train, y_train], axis=1)
+    train_dataset.to_csv("train_dataset.csv", index=False)
+    mlflow.log_artifact("train_dataset.csv", artifact_path="datasets")
+    logger.info('Датасет залогирован в MLflow')
     logger.info('Успешно!')
 
 
