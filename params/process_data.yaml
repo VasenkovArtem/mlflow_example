@@ -6,4 +6,11 @@ params:
     - occupation
     - education
     - capital.gain
-  train_size: 1000
+    - capital.loss
+    - hours.per.week
+    - marital.status
+    - relationship
+    - age
+    - workclass
+    - fnlwgt
+    - education.num

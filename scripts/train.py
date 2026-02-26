@@ -1,12 +1,21 @@
 import pandas as pd
 from joblib import dump
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+import mlflow
 
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH, RANDOM_STATE
 from utils import get_logger, load_params
 
 STAGE_NAME = 'train'
 
+MODELS = {
+    'LogisticRegression': LogisticRegression,
+    'DecisionTreeClassifier': DecisionTreeClassifier,
+    'RandomForestClassifier': RandomForestClassifier,
+    'GradientBoostingClassifier': GradientBoostingClassifier
+}
 
 def train():
     logger = get_logger(logger_name=STAGE_NAME)
@@ -20,15 +29,27 @@ def train():
     logger.info('Успешно считали датасеты!')
 
     logger.info('Создаём модель')
+    model_type = params.pop('model_type', 'LogisticRegression')
+    mlflow.log_param("model_type", model_type)
+    logger.info(f'    Тип модели: {model_type}')
+    
     params['random_state'] = RANDOM_STATE
+
     logger.info(f'    Параметры модели: {params}')
-    model = LogisticRegression(**params)
+    mlflow.log_params(params)
+    if model_type not in MODELS:
+        raise ValueError(f"ошибка в имени модели: {model_type}")
+    
+    model_class = MODELS[model_type]
+    model = model_class(**params)
 
     logger.info('Обучаем модель')
     model.fit(X_train, y_train)
 
     logger.info('Сохраняем модель')
     dump(model, MODEL_FILEPATH)
+    mlflow.sklearn.log_model(model, "model")
+
     logger.info('Успешно!')
 
 
