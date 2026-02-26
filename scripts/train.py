@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH, RANDOM_STATE
 from utils import get_logger, load_params
+import mlflow
 
 STAGE_NAME = 'train'
 
@@ -41,6 +42,12 @@ def train():
 
     logger.info('Сохраняем модель')
     dump(model, MODEL_FILEPATH)
+    logger.info('Успешно!')
+
+    train_dataset = pd.concat([X_train, y_train], axis=1)
+    train_dataset.to_csv("train_dataset.csv", index=False)
+    mlflow.log_artifact("train_dataset.csv", artifact_path="datasets")
+    logger.info('Датасет залогирован в MLflow')
     logger.info('Успешно!')
 
 
