@@ -9,7 +9,8 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(name)s : %(message)s
 warnings.filterwarnings('ignore', category=FutureWarning)
 warnings.filterwarnings('ignore', category=DataConversionWarning)
 
-PARAMS_FILEPATH_PATTERN = '/app/params/{stage_name}.yaml'
+_PARAMS_DIR = '/app/params' if os.path.exists('/app/params') else os.path.join(os.path.dirname(__file__), 'params')
+PARAMS_FILEPATH_PATTERN = os.path.join(_PARAMS_DIR, '{stage_name}.yaml')
 
 
 def load_params(stage_name: str) -> dict:
