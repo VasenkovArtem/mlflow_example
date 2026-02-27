@@ -1,6 +1,11 @@
+import mlflow
 import pandas as pd
 from joblib import dump
+
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH, RANDOM_STATE
 from utils import get_logger, load_params
@@ -21,8 +26,11 @@ def train():
 
     logger.info('Создаём модель')
     params['random_state'] = RANDOM_STATE
-    logger.info(f'    Параметры модели: {params}')
-    model = LogisticRegression(**params)
+    logger.info(f'    Параметры модели: {params['model_params']}')
+    model = GradientBoostingClassifier(**params['model_params'])
+
+    mlflow.log_param("model_type", params['model_type'])
+    mlflow.log_params(params['model_params'])
 
     logger.info('Обучаем модель')
     model.fit(X_train, y_train)
@@ -30,6 +38,12 @@ def train():
     logger.info('Сохраняем модель')
     dump(model, MODEL_FILEPATH)
     logger.info('Успешно!')
+
+    mlflow.sklearn.log_model(
+        model,
+        artifact_path="model",
+        input_example=X_train[:5]
+    )
 
 
 if __name__ == '__main__':

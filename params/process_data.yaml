@@ -1,9 +1,32 @@
 params:
   features:
-    - race
+    - age
+    - workclass
+    # - race
     - sex
-    - native.country
+    # - native.country
     - occupation
-    - education
+    - hours.per.week
+    # - education
+    - education.num
     - capital.gain
   train_size: 1000
+  target_column: income
+  test_size: 0.3
+
+#   Описание признаков:
+
+# - `age` &mdash; возраст человека
+# - `workclass` &mdash; тип занятости
+# - `fnlwgt` &mdash; вес наблюдения в данных переписи населения США (сколько реальных людей в популяции «представляет» эта строка)
+# - `education` &mdash; образование
+# - `education.num` &mdash; уровень образования в виде числа
+# - `marital.status` &mdash; семейное положение
+# - `occupation` &mdash; профессия / род деятельности
+# - `relationship` &mdash; роль человека в семье
+# - `race` &mdash; расовая группа
+# - `sex` &mdash; пол человека (`Male` / `Female`)
+# - `capital.gain` &mdash; доход от капитала (прибыль от продажи активов)
+# - `capital.loss` &mdash; убытки от капитала
+# - `hours.per.week` &mdash; количество рабочих часов в неделю
+# - `native.country` &mdash; страна происхождения

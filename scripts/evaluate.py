@@ -1,9 +1,10 @@
 import os
-
+import mlflow
 import numpy as np
 import pandas as pd
 from joblib import load
 from sklearn.metrics import get_scorer
+from sklearn.metrics import classification_report
 
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH
 from utils import get_logger, load_params
@@ -30,8 +31,8 @@ def evaluate():
     model = load(MODEL_FILEPATH)
 
     # logger.info('Скорим модель на тесте')
-    # y_proba = model.predict_proba(X_test)[:, 1]
-    # y_pred = np.where(y_proba >= 0.5, 1, 0)
+    y_proba = model.predict_proba(X_test)[:, 1]
+    y_pred = np.where(y_proba >= 0.5, 1, 0)
 
     logger.info('Начали считать метрики на тесте')
     metrics = {}
@@ -40,6 +41,18 @@ def evaluate():
         score = scorer(model, X_test, y_test)
         metrics[metric_name] = score
     logger.info(f'Значения метрик - {metrics}')
+
+    for k, v in metrics.items():
+        if k == "average_precision":
+            mlflow.log_metric("pr_auc", v)
+        else:
+            mlflow.log_metric(k, v)
+
+    report = classification_report(y_test, y_pred)
+    with open("classification_report.txt", "w") as f:
+        f.write(report)
+
+    mlflow.log_artifact("classification_report.txt")
 
 
 if __name__ == '__main__':
