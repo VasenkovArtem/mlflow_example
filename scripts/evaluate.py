@@ -1,9 +1,10 @@
+import mlflow
 import os
 
 import numpy as np
 import pandas as pd
 from joblib import load
-from sklearn.metrics import get_scorer
+from sklearn.metrics import get_scorer, classification_report
 
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH
 from utils import get_logger, load_params
@@ -14,6 +15,7 @@ STAGE_NAME = 'evaluate'
 def evaluate():
     logger = get_logger(logger_name=STAGE_NAME)
     params = load_params(stage_name=STAGE_NAME)
+    mlflow.log_params(params)
 
     logger.info('Начали считывать датасеты')
     splits = [None, None, None, None]
@@ -33,11 +35,18 @@ def evaluate():
     # y_proba = model.predict_proba(X_test)[:, 1]
     # y_pred = np.where(y_proba >= 0.5, 1, 0)
 
+    y_pred = model.predict(X_test)
+    report = classification_report(y_test, y_pred)
+    with open("classification_report.txt", "w") as f:
+        f.write(report)
+    mlflow.log_artifact("classification_report.txt", artifact_path="reports")
+
     logger.info('Начали считать метрики на тесте')
     metrics = {}
     for metric_name in params['metrics']:
         scorer = get_scorer(metric_name)
         score = scorer(model, X_test, y_test)
+        mlflow.log_metric(metric_name, score)
         metrics[metric_name] = score
     logger.info(f'Значения метрик - {metrics}')
 

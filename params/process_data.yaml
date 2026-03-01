@@ -6,4 +6,12 @@ params:
     - occupation
     - education
     - capital.gain
-  train_size: 1000
+    - age
+    - workclass
+    - fnlwgt
+    - marital.status
+    - relationship
+    - capital.loss
+    - hours.per.week
+  train_size: 10000
+  cat_encoder_type: ohe

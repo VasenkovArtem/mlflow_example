@@ -1,5 +1,12 @@
 params:
-  penalty: l2
-  C: 0.9
-  solver: lbfgs
-  max_iter: 1000
+  model_type: random_forest
+
+  log_reg:
+    penalty: l2
+  
+  random_forest:
+    n_estimators: 100
+  
+  grad_boosting:
+    loss: log_loss
+    n_estimators: 600
