@@ -1,0 +1,4 @@
+params:
+  model_type: DecisionTreeClassifier
+  max_depth: 10
+  random_state: 42

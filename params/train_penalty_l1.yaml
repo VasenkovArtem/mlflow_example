@@ -1,0 +1,6 @@
+params:
+  penalty: l1
+  C: 0.9
+  solver: liblinear
+  max_iter: 1000
+  model_type: LogisticRegression

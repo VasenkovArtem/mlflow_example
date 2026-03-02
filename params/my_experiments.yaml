@@ -1,0 +1,69 @@
+# Maps each experiment to its process_data, train, and evaluate yaml configs
+# Each experiment changes only ONE param with consistent naming
+
+exp_train_size_500:
+  process_data: params/process_data_train_size_500.yaml
+  train: params/train.yaml
+  evaluate: params/evaluate.yaml
+
+exp_train_size_2000:
+  process_data: params/process_data_train_size_2000.yaml
+  train: params/train.yaml
+  evaluate: params/evaluate.yaml
+
+exp_C_0_1:
+  process_data: params/process_data.yaml
+  train: params/train_C_0_1.yaml
+  evaluate: params/evaluate.yaml
+
+exp_C_5:
+  process_data: params/process_data.yaml
+  train: params/train_C_5.yaml
+  evaluate: params/evaluate.yaml
+
+exp_max_iter_100:
+  process_data: params/process_data.yaml
+  train: params/train_max_iter_100.yaml
+  evaluate: params/evaluate.yaml
+
+exp_max_iter_5000:
+  process_data: params/process_data.yaml
+  train: params/train_max_iter_5000.yaml
+  evaluate: params/evaluate.yaml
+
+exp_penalty_l1:
+  process_data: params/process_data.yaml
+  train: params/train_penalty_l1.yaml
+  evaluate: params/evaluate.yaml
+
+exp_solver_liblinear:
+  process_data: params/process_data.yaml
+  train: params/train_solver_liblinear.yaml
+  evaluate: params/evaluate.yaml
+
+exp_model_decision_tree:
+  process_data: params/process_data.yaml
+  train: params/train_model_decision_tree.yaml
+  evaluate: params/evaluate.yaml
+
+exp_model_random_forest:
+  process_data: params/process_data.yaml
+  train: params/train_model_random_forest.yaml
+  evaluate: params/evaluate.yaml
+
+exp_model_random_forest_max_depth_5:
+  process_data: params/process_data.yaml
+  train: params/train_model_random_forest_max_depth_5.yaml
+  evaluate: params/evaluate.yaml
+
+exp_model_random_forest_max_depth_15:
+  process_data: params/process_data.yaml
+  train: params/train_model_random_forest_max_depth_15.yaml
+  evaluate: params/evaluate.yaml
+
+exp_model_random_forest_max_depth_15_train_size_2000:
+  process_data: params/process_data_train_size_2000.yaml
+  train: params/train_model_random_forest_max_depth_15.yaml
+  evaluate: params/evaluate.yaml
+
+
