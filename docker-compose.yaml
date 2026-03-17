@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     image: mlflow_example:$USER
-    container_name: mlflow_example_$USER
+    container_name: mlflow_example_student10_hw
     environment:
       - USERNAME=$USER
       - USER=$USER
@@ -14,5 +14,5 @@ services:
     volumes:
       - ./:/app
     ports:
-      - 8024:8888
+      - 8026:8888
     command: sh -c "cd / && jupyter notebook --allow-root --ip=0.0.0.0 && sleep infinity"
