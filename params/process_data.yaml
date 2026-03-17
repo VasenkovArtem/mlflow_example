@@ -1,9 +1,12 @@
 params:
   features:
-    - race
+    - age
+    - education.num
+    - hours.per.week
+    - marital.status
+    - occupation
+    - relationship
     - sex
     - native.country
-    - occupation
-    - education
-    - capital.gain
-  train_size: 1000
+  train_size: 6000
+  # можно менять для экспериментов: 2000, 4000, 6000, 8000, 10000 и т.д.

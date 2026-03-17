@@ -2,6 +2,9 @@ import pandas as pd
 from joblib import dump
 from sklearn.linear_model import LogisticRegression
 
+import mlflow
+import mlflow.sklearn
+
 from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH, RANDOM_STATE
 from utils import get_logger, load_params
 
@@ -20,15 +23,33 @@ def train():
     logger.info('Успешно считали датасеты!')
 
     logger.info('Создаём модель')
+    model_type = params.pop('model_type', 'logistic_regression')
     params['random_state'] = RANDOM_STATE
+    logger.info(f'    Тип модели: {model_type}')
     logger.info(f'    Параметры модели: {params}')
-    model = LogisticRegression(**params)
+
+    # логирование параметров модели и гиперпараметров в MLflow
+    if mlflow.active_run() is not None:
+        mlflow.log_param('model_type', model_type)
+        for name, value in params.items():
+            mlflow.log_param(f'model_{name}', value)
+
+    # поддержка разных типов моделей при необходимости
+    if model_type == 'logistic_regression':
+        model = LogisticRegression(**params)
+    else:
+        raise ValueError(f'Неизвестный тип модели: {model_type}')
 
     logger.info('Обучаем модель')
     model.fit(X_train, y_train)
 
-    logger.info('Сохраняем модель')
+    logger.info('Сохраняем модель на диск')
     dump(model, MODEL_FILEPATH)
+
+    # логирование модели как MLflow Model
+    if mlflow.active_run() is not None:
+        mlflow.sklearn.log_model(model, artifact_path='model')
+
     logger.info('Успешно!')
 
 
