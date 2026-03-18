@@ -1,42 +1,52 @@
-# mlflow_example
+# mlflow_example — ДЗ по MLflow (базовый уровень)
 
-Пример использования MLflow для трекинга экспериментов.
+**Experiment в MLflow:** `homework_Nikulin`  
+**Tracking URI:** http://158.160.2.37:5000/
 
-## Домашнее задание (базовый уровень)
+## Структура репозитория (для проверки)
 
-- **Tracking URI:** `http://158.160.2.37:5000/`
-- **Experiment:** `homework_Nikulin` (все run пайплайна попадают сюда)
+| Что смотреть | Где |
+|--------------|-----|
+| Код пайплайна | `scripts/process_data.py`, `scripts/train.py`, `scripts/evaluate.py`, `runner.py` |
+| Параметры шагов | `params/process_data.yaml`, `params/train.yaml`, `params/evaluate.yaml` |
+| **Лучший run по ROC-AUC** (воспроизведение) | `params/process_data_best.yaml`, `params/train_best.yaml`, `params/evaluate_best.yaml` |
+| **Отчёт** (разрезы, таблицы, выводы, ссылки на run) | [`report.md`](report.md) |
 
-### Один запуск пайплайна
+## Запуск
 
-В контейнере или в venv с зависимостями из `requirements.txt`:
+Зависимости: `pip install -r requirements.txt` (или Docker, см. ниже).
+
+**Один прогон пайплайна** (текущие `params/*.yaml`):
 
 ```bash
 python3 runner.py
 ```
 
-Параметры шагов: `params/process_data.yaml`, `params/train.yaml`, `params/evaluate.yaml`.
-
-### Серия экспериментов (10+ run)
+**Воспроизвести лучший по ROC-AUC run** (gradient boosting, см. `report.md`):
 
 ```bash
+cp params/process_data_best.yaml params/process_data.yaml
+cp params/train_best.yaml params/train.yaml
+cp params/evaluate_best.yaml params/evaluate.yaml
+python3 runner.py
+```
+
+**Серия из 15 экспериментов** (разрезы: `train_size`, тип модели, `C` у LR, набор признаков):
+
+```bash
+# в контейнере, из /app:
 python3 run_batch_experiments.py
 ```
 
-Скрипт выполнит 15 запусков с разными конфигурациями (разрезы: размер train, тип модели, `C` у LR, набор признаков), затем вернёт базовые `params/*.yaml`.
-
-### Лучший run по ROC-AUC
-
-После прогона откройте MLflow UI, найдите run с максимальным `roc_auc`, при необходимости обновите `params/*_best.yaml` и опишите ссылку в [`report.md`](report.md).
-
-### Отчёт
-
-Шаблон отчёта с разрезами и местами под ссылки: [`report.md`](report.md).
-
-## Сборка окружения (Docker)
+## Docker
 
 ```bash
 docker compose up -d --build
+docker exec -it <имя_контейнера> python3 /app/runner.py
 ```
 
-Рабочая директория в контейнере: `/app` (репозиторий смонтирован в `/app`).
+Репозиторий монтируется в `/app`.
+
+## Исходный репозиторий курса
+
+Форк от [VasenkovArtem/mlflow_example](https://github.com/VasenkovArtem/mlflow_example).
