@@ -5,4 +5,4 @@ params:
     - recall
     - f1
     - roc_auc
-  artifact_type: confusion_matrix
+  artifact_type: pr_curve
