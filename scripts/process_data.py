@@ -91,6 +91,17 @@ def process_data():
         )
     logger.info('Успешно сохранили датасеты!')
 
+    # Продвинутый уровень: артефакты обучающей выборки в MLflow (≥3 run с ними — при нескольких запусках runner)
+    if mlflow.active_run():
+        train_artifact_dir = 'train_dataset'
+        for split_name in ('X_train', 'y_train'):
+            path = DATASET_PATH_PATTERN.format(split_name=split_name)
+            if os.path.isfile(path):
+                mlflow.log_artifact(path, artifact_path=train_artifact_dir)
+        logger.info(
+            f'    Залогированы артефакты обучающего датасета в MLflow ({train_artifact_dir}/)'
+        )
+
 
 if __name__ == '__main__':
     process_data()

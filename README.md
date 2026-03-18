@@ -47,6 +47,19 @@ docker exec -it <имя_контейнера> python3 /app/runner.py
 
 Репозиторий монтируется в `/app`.
 
+## Продвинутый уровень (часть II)
+
+Отчёт по экспериментам коллеги (пример: `homework_Bazhenov`): [`results_Bazhenov.md`](results_Bazhenov.md) — загрузить на шаг Степика (имя файла уточнить у преподавателя: `results_<фамилия>.md`).
+
+## Продвинутый уровень (часть I)
+
+После шага `process_data` в каждый run (при вызове через `runner.py`) в MLflow в артефакты попадает обучающая выборка:
+
+- `train_dataset/X_train.csv`
+- `train_dataset/y_train.csv`
+
+Чтобы выполнить требование «не менее трёх запусков» — достаточно три раза выполнить `python3 runner.py` с разными `params` (или прогнать `run_batch_experiments.py`: артефакты будут у всех run).
+
 ## Исходный репозиторий курса
 
 Форк от [VasenkovArtem/mlflow_example](https://github.com/VasenkovArtem/mlflow_example).
