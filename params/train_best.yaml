@@ -1,5 +1,6 @@
+# Совпадает с run slice_model_gradient_boosting (лучший roc_auc)
 params:
-  model_type: logistic_regression
+  model_type: gradient_boosting
   logistic_regression:
     penalty: l2
     C: 0.9

@@ -1,0 +1,10 @@
+# Лучший run по ROC-AUC по всей серии: gradient_boosting, train_size=8000, 6 признаков
+params:
+  features:
+    - race
+    - sex
+    - native.country
+    - occupation
+    - education
+    - capital.gain
+  train_size: 8000
