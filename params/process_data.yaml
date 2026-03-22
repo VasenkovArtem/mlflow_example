@@ -13,3 +13,4 @@ params:
     - hours.per.week
     - native.country
   train_size: 10000
+  log_test_dataset: false

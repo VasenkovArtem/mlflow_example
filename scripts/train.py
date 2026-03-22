@@ -7,7 +7,12 @@ from xgboost import XGBClassifier
 import mlflow
 import mlflow.sklearn
 
-from constants import DATASET_PATH_PATTERN, MODEL_FILEPATH, RANDOM_STATE
+from constants import (
+    DATASET_PATH_PATTERN,
+    FEATURE_IMPORTANCES_PATH,
+    MODEL_FILEPATH,
+    RANDOM_STATE,
+)
 from utils import get_logger, load_params
 
 STAGE_NAME = 'train'
@@ -25,22 +30,20 @@ def train():
     logger.info('Успешно считали датасеты!')
 
     logger.info('Создаём модель')
-    
-    # Extract model type from params
-    model_type = params.get('model_type', 'LogisticRegression')
-    model_params = {k: v for k, v in params.items() if k != 'model_type'}
+
+    model_type = params.pop('model_type', 'LogisticRegression')
+    model_params = params
     model_params['random_state'] = RANDOM_STATE
-    
-    # Model factory
+
     model_classes = {
         'LogisticRegression': LogisticRegression,
         'DecisionTree': DecisionTreeClassifier,
         'RandomForest': RandomForestClassifier,
         'XGBoost': XGBClassifier,
     }
-    
+
     if model_type not in model_classes:
-        raise ValueError(f'Unknown model type: {model_type}. Available: {list(model_classes.keys())}')
+        raise ValueError(f'Unknown model type: {model_type}. Available: {list(model_classes)}')
     
     logger.info(f'    Тип модели: {model_type}')
     logger.info(f'    Параметры модели: {model_params}')
@@ -74,8 +77,8 @@ def train():
         plt.xlabel('Feature Index')
         plt.ylabel('Importance')
         plt.tight_layout()
-        plt.savefig('/tmp/feature_importances.png')
-        mlflow.log_artifact('/tmp/feature_importances.png')
+        plt.savefig(FEATURE_IMPORTANCES_PATH)
+        mlflow.log_artifact(FEATURE_IMPORTANCES_PATH)
         plt.close()
         
         logger.info('Залогировали feature importances')
