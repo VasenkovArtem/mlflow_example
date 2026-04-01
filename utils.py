@@ -3,7 +3,11 @@ import os
 import yaml
 import warnings
 
+import json
+import mlflow
+
 from sklearn.exceptions import DataConversionWarning
+from constants import MLFLOW_TRACKING_URI, MLFLOW_EXPERIMENT_NAME
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(name)s : %(message)s')
 warnings.filterwarnings('ignore', category=FutureWarning)
@@ -30,3 +34,19 @@ def get_logger(
     logger = logging.getLogger(name=logger_name)
     logger.setLevel(level)
     return logger
+
+
+def setup_mlflow():
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)
+
+
+def prepare_params_for_logging(params: dict, prefix: str = '') -> dict:
+    logged = {}
+    for key, value in params.items():
+        log_key = f'{prefix}{key}'
+        if isinstance(value, (list, tuple, dict, set)):
+            logged[log_key] = json.dumps(value, ensure_ascii=False)
+        else:
+            logged[log_key] = value
+    return logged
